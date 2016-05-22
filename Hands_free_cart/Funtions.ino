@@ -9,7 +9,7 @@ void InitMoter(void) {
 }
 
 void LeftMoterCtrl(int leftspeed) {
-  int PWM_L = map(leftspeed, -400, 400, -128, 127 );
+  int PWM_L = map(leftspeed, -400, 400, -255, 255 );
   if (PWM_L >= 0) {
     analogWrite(L_MOTER_F, PWM_L);
     analogWrite(L_MOTER_B, 0);
@@ -21,7 +21,7 @@ void LeftMoterCtrl(int leftspeed) {
 }
 
 void RightMoterCtrl(int rightspeed) {
-  int PWM_R = map(rightspeed, -400, 400, -128, 127 );
+  int PWM_R = map(rightspeed, -400, 400, -255, 255 );
   if (PWM_R >= 0) {
     analogWrite(R_MOTER_F, PWM_R);
     analogWrite(R_MOTER_B, 0);
@@ -64,22 +64,24 @@ int Look(int object_cnt) {
 }
 
 
-int obj_size = 400;
+unsigned long obj_size = 400;
 void Follow(int target) {
   int follow_error = PIXY_RCS_CENTER_POS - panLoop.m_pos;
 
   obj_size += pixy.blocks[target].width * pixy.blocks[target].height;  //Low pass filter 혹시 모를 사이즈 노이즈
   obj_size -= obj_size >> 3;
-  Serial.print("obj_size = " + String(obj_size) + "\n");
+  Serial.print("obj_size = " + String(obj_size) + "\n"); //1000대 굳
+  int distance_factor = constrain(sqrt(obj_size), 3, 350);
+  int base_speed = map (distance_factor, 3, 350, -250, 250);
 
-  int a = map(distance_error, -900, 500, -450, 300);
+//  int base_speed = constrain(30 - sqrt(obj_size), -300, 400);
 
-  int base_speed = constrain(a, -150, 300);
+  int speed_differential = (follow_error + (follow_error * base_speed)) ; // follow_error가 500대 값
 
-  int speed_differential = (follow_error + (follow_error * base_speed)) >> 8; // follow_error가 500대 값
-
-  int leftspeed = constrain(base_speed + speed_differential, -400, 400);
-  int rightspeed = constrain(base_speed - speed_differential, -400, 400);
+  int leftspeed = constrain(base_speed - speed_differential, -400, 400);
+  int rightspeed = constrain(base_speed + speed_differential, -400, 400);
+  Serial.print("base_speed = " + String(base_speed) + "\n");
+  Serial.print("speed_differential = " + String(speed_differential) + "\n");
 
   LeftMoterCtrl(leftspeed);
   RightMoterCtrl(rightspeed);
@@ -105,21 +107,6 @@ void Find() {
     delay(300);
   }
   pixy.setServos(panLoop.m_pos, tiltLoop.m_pos);
-}
-
-void GetDistance (void) {
-  int Raw_D = analogRead(DIS_SENSOR);
-  int filtered_distance = Raw_D;
-  filtered_distance += Raw_D;
-  filtered_distance -= filtered_distance >> 3;
-  distance = map (Raw_D, 500, 15, 200, 1500);
-  distance_error = distance - distance_throtle;
-  Serial.print("filtered_distance = " + String(filtered_distance) + "\n");
-  Serial.print("distance = " + String(distance) + "\n");
-  Serial.print("distance_error = " + String(distance_error) + "\n");
-  //    if (Raw_D > 508 || Raw_D < 102) {
-  //      distance = 0;
-  //    }
 }
 
 void Change_Value_in_Serial() { //new line
