@@ -53,7 +53,7 @@ void setup() {
 
 void loop() {
 
-//  while (mode == 0) { //자동모드
+  while (mode == 0) { //자동모드
 
     object_cnt = pixy.getBlocks();
     Serial.print("object_cnt = " + String(object_cnt) + "\n");
@@ -62,14 +62,13 @@ void loop() {
       Follow(target);
       finder_var = 0;
     }
-//    if (distance < 30) { //장애물 감지 정지
-//      LeftMoterCtrl(0);
-//      RightMoterCtrl(0);
-//    }
-//    if ((object_cnt == 0) && (finder_var > 20)) { //2초 시간 이상 타겟이 없다면
-//      Find();
-//    }
-//  }
+    if ((object_cnt == 0) && (finder_var > 20)) { //2초 시간 이상 타겟이 없다면
+      Find();
+      if(object_cnt != 0)
+        finder_var = 0;
+      
+    }
+  }
   //  while (mode == 1) { //수동모드
   //
   //  }
