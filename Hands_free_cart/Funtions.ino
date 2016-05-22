@@ -71,11 +71,11 @@ void Follow(int target) {
   obj_size += pixy.blocks[target].width * pixy.blocks[target].height;  //Low pass filter 혹시 모를 사이즈 노이즈
   obj_size -= obj_size >> 3;
   Serial.print("obj_size = " + String(obj_size) + "\n");
-  
+
   int a = map(distance_error, -90, 60, -450, 300);
   int base_speed = constrain(a, -150, 300);
 
-  int speed_differential = (follow_error + (follow_error * base_speed)) >> 8; // follow_error가 500대 값 
+  int speed_differential = (follow_error + (follow_error * base_speed)) >> 8; // follow_error가 500대 값
 
   int leftspeed = constrain(base_speed + speed_differential, -400, 400);
   int rightspeed = constrain(base_speed - speed_differential, -400, 400);
@@ -107,11 +107,19 @@ void Find() {
 }
 
 void GetDistance (void) {
-  int Raw_D = analogRead(DIS_SENSOR);
-  distance = map(Raw_D, 0, 1024 , 0, 150);
-  distance_error = distance - distance_throtle;
+  Raw_D = analogRead(DIS_SENSOR);
+  int filtered_distance = Raw_D;
+  filtered_distance += Raw_D;
+  filtered_distance -= filtered_distance >> 3;
+  distance = map (Raw_D, 500, 15, 200, 1500 );
+  Serial.print("filtered_distance = " + String(filtered_distance) + "\n");
   Serial.print("distance = " + String(distance) + "\n");
-  Serial.print("distance_error = " + String(distance_error) + "\n");
+
+//    if (Raw_D > 508 || Raw_D < 102) {
+//      distance = 0;
+//      Serial.print("Raw_D = " + String(Raw_D) + "\n");
+//      Serial.print("distance = " + String(distance) + "\n");
+//    }
 }
 
 void Change_Value_in_Serial() { //new line
@@ -125,11 +133,11 @@ void Change_Value_in_Serial() { //new line
       part1 = command.substring(0, command.indexOf(" "));
       part2 = command.substring(command.indexOf(" ") + 1);
 
-//      if (part1.equalsIgnoreCase("A_variable"))
-//        A_variable = part2.toInt();
-//
-//      else if (part1.equalsIgnoreCase("B_variable"))
-//        B_variable = part2.toInt();
+      //      if (part1.equalsIgnoreCase("A_variable"))
+      //        A_variable = part2.toInt();
+      //
+      //      else if (part1.equalsIgnoreCase("B_variable"))
+      //        B_variable = part2.toInt();
 
       command = "";
     }
