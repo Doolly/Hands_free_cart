@@ -60,7 +60,7 @@ void setup() {
 void loop() {
   while (mode == 0) { //자동모드
 
-    object_cnt = pixy.getBlocks();
+   // object_cnt = pixy.getBlocks();
 
     if (object_cnt != 0 ) {
       target = Look(object_cnt);
