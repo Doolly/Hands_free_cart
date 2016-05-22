@@ -3,7 +3,6 @@
 #include <Pixy.h>
 #include <MsTimer2.h>
 #include <SoftwareSerial.h>
-#include <elapsedMillis.h>
 /*------ Pin Define ------*/
 #define L_MOTER_F 5
 #define L_MOTER_B 6
@@ -20,7 +19,6 @@
 /*------ Objects ------*/
 Pixy pixy;
 SoftwareSerial BTSerial(2, 3); //RX, TX
-elapsedMillis timerSerial;
 /*------ Functions ------*/
 void LostTimer(void);
 void LeftMoterCtrl(int leftspeed);
@@ -39,7 +37,7 @@ int PWM_R;
 int mode;
 int target;
 int object_cnt;
-int finder_var;
+int finder_var = 0;
 String command; //debuging용
 
 void setup() {
@@ -50,7 +48,7 @@ void setup() {
   pinMode(DIS_SENSOR, INPUT);
   pixy.init();
   InitMoter();
-  MsTimer2::set(100, LostTimer);
+  MsTimer2::set(100, LostTimer);  //100ms
   MsTimer2::start();
   Serial.begin(9600);
   Serial.println("Lets go");
@@ -71,13 +69,13 @@ void loop() {
       LeftMoterCtrl(0);
       RightMoterCtrl(0);
     }
-    else if (object_cnt = 0 && finder_var > 10) { //일정시간 이상 타겟이 없다면
+    if ((object_cnt == 0) && (finder_var > 20)) { //일정시간 이상 타겟이 없다면
       Find();
     }
   }
 
-  while (mode == 1) { //수동모드
-
-  }
+  //  while (mode == 1) { //수동모드
+  //
+  //  }
 
 }
