@@ -6,6 +6,7 @@ class ServoLoop {
 
     int32_t m_pos;
     int32_t m_prev_error;
+    private:
     int32_t m_pgain;
     int32_t m_dgain;
 };

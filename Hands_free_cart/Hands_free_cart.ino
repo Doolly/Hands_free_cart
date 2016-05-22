@@ -38,7 +38,7 @@ int PWM_R;
 int mode;
 int target;
 int object_cnt;
-int finder_var;
+int finder_var = 0;
 String command; //debuging용
 
 void setup() {
@@ -49,7 +49,7 @@ void setup() {
   pinMode(DIS_SENSOR, INPUT);
   pixy.init();
   InitMoter();
-  MsTimer2::set(100, LostTimer);
+  MsTimer2::set(100, LostTimer);  //100ms
   MsTimer2::start();
   Serial.begin(9600);
   Serial.println("Lets go");
@@ -57,6 +57,7 @@ void setup() {
 }
 
 void loop() {
+<<<<<<< HEAD
   //  while (mode == 0) { //자동모드
   //
   //    object_cnt = pixy.getBlocks();
@@ -75,6 +76,26 @@ void loop() {
   //    }
   //  }
   //
+=======
+  while (mode == 0) { //자동모드
+
+    object_cnt = pixy.getBlocks();
+
+    if (object_cnt != 0 ) {
+      target = Look(object_cnt);
+      Follow(target);
+      finder_var = 0;
+    }
+    if (distance < 20) { //장애물 감지 정지
+      LeftMoterCtrl(0);
+      RightMoterCtrl(0);
+    }
+    if ((object_cnt == 0) && (finder_var > 20)) { //일정시간 이상 타겟이 없다면
+      Find();
+    }
+  }
+
+>>>>>>> origin/master
   //  while (mode == 1) { //수동모드
   //
   //  }

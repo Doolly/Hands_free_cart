@@ -9,7 +9,7 @@ void InitMoter(void) {
 }
 
 void LeftMoterCtrl(int leftspeed) {
-  int PWM_L = map(leftspeed, -400, 400, -128, 128 );
+  int PWM_L = map(leftspeed, -400, 400, -128, 127 );
   if (PWM_L >= 0) {
     analogWrite(L_MOTER_F, PWM_L);
     analogWrite(L_MOTER_B, 0);
@@ -21,7 +21,7 @@ void LeftMoterCtrl(int leftspeed) {
 }
 
 void RightMoterCtrl(int rightspeed) {
-  int PWM_R = map(rightspeed, -400, 400, -128, 128 );
+  int PWM_R = map(rightspeed, -400, 400, -128, 127 );
   if (PWM_R >= 0) {
     analogWrite(R_MOTER_F, PWM_R);
     analogWrite(R_MOTER_B, 0);
@@ -72,7 +72,11 @@ void Follow(int target) {
   obj_size -= obj_size >> 3;
   Serial.print("obj_size = " + String(obj_size) + "\n");
 
+<<<<<<< HEAD
   int a = map(distance_error, -90, 60, -450, 300);
+=======
+  int a = distance_error*5;
+>>>>>>> origin/master
   int base_speed = constrain(a, -150, 300);
 
   int speed_differential = (follow_error + (follow_error * base_speed)) >> 8; // follow_error가 500대 값
@@ -83,9 +87,8 @@ void Follow(int target) {
   LeftMoterCtrl(leftspeed);
   RightMoterCtrl(rightspeed);
 }
-
+int32_t toggle = 100L;
 void Find() {
-  int toggle = 100L;
   panLoop.m_pos += toggle;
 
   if ((panLoop.m_pos >= PIXY_RCS_MAX_POS) || (panLoop.m_pos <= PIXY_RCS_MIN_POS)) {
