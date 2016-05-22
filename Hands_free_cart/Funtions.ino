@@ -71,15 +71,12 @@ void Follow(int target) {
   obj_size += pixy.blocks[target].width * pixy.blocks[target].height;  //Low pass filter 혹시 모를 사이즈 노이즈
   obj_size -= obj_size >> 3;
   Serial.print("obj_size = " + String(obj_size) + "\n"); //1000대 굳
-  int distance_factor = constrain(sqrt(obj_size), 3, 350);
-  int base_speed = map (distance_factor, 3, 350, -250, 250);
+  int base_speed =constrain( -8*sqrt(obj_size) + 440, -200, 400);
 
-//  int base_speed = constrain(30 - sqrt(obj_size), -300, 400);
+  int speed_differential = constrain(follow_error/2.2, -200, 200); // follow_error가 500대 값
 
-  int speed_differential = (follow_error + (follow_error * base_speed)) ; // follow_error가 500대 값
-
-  int leftspeed = constrain(base_speed - speed_differential, -400, 400);
-  int rightspeed = constrain(base_speed + speed_differential, -400, 400);
+  int leftspeed = constrain(base_speed + speed_differential, -400, 400);
+  int rightspeed = constrain(base_speed - speed_differential, -400, 400);
   Serial.print("base_speed = " + String(base_speed) + "\n");
   Serial.print("speed_differential = " + String(speed_differential) + "\n");
 
@@ -92,18 +89,18 @@ void Find() {
   panLoop.m_pos += toggle;
 
   if ((panLoop.m_pos >= PIXY_RCS_MAX_POS) || (panLoop.m_pos <= PIXY_RCS_MIN_POS)) {
-    tiltLoop.m_pos = random(PIXY_RCS_MIN_POS, PIXY_RCS_MAX_POS * 0.8);
+    tiltLoop.m_pos = random(PIXY_RCS_MAX_POS * 0.1, PIXY_RCS_MAX_POS * 0.5);
     toggle = -toggle;
     delay(5);
   }
   if (toggle < 0) {
-    LeftMoterCtrl(200);
-    RightMoterCtrl(-200);
+    LeftMoterCtrl(100);
+    RightMoterCtrl(-100);
     delay(200);
   }
   else {
-    LeftMoterCtrl(-300);
-    RightMoterCtrl(300);
+    LeftMoterCtrl(-150);
+    RightMoterCtrl(150);
     delay(300);
   }
   pixy.setServos(panLoop.m_pos, tiltLoop.m_pos);
@@ -133,5 +130,4 @@ void Change_Value_in_Serial() { //new line
       command += c;
   }
 }
-//test
-// I'm future
+
