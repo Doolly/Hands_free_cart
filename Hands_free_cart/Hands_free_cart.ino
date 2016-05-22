@@ -29,16 +29,15 @@ void Find();
 void GetDistance (void);
 void Change_Value_in_Serial();
 /*------ Global Variables ------*/
-const int distance_throtle = 70;
+const int distance_throtle = 1000;
 int distance;
 int distance_error;
-int Raw_D;
 int PWM_L;
 int PWM_R;
 int mode;
 int target;
 int object_cnt;
-int finder_var = 0;
+int finder_var;
 String command; //debuging용
 
 void setup() {
@@ -57,26 +56,24 @@ void setup() {
 }
 
 void loop() {
-<<<<<<< HEAD
-  //  while (mode == 0) { //자동모드
-  //
-  //    object_cnt = pixy.getBlocks();
-  //
-  //    if (object_cnt != 0 ) {
-  //      target = Look(object_cnt);
-  //      Follow(target);
-  //      finder_var = 0;
-  //    }
-  //    if (distance < 20) { //장애물 감지 정지
-  //      LeftMoterCtrl(0);
-  //      RightMoterCtrl(0);
-  //    }
-  //    else if (object_cnt = 0 && finder_var > 10) { //일정시간 이상 타겟이 없다면
-  //      Find();
-  //    }
-  //  }
-  //
-=======
+    while (mode == 0) { //자동모드
+      object_cnt = pixy.getBlocks();
+  
+      if (object_cnt != 0 ) {
+        target = Look(object_cnt);
+        Follow(target);
+        finder_var = 0;
+      }
+      if (distance < 20) { //장애물 감지 정지
+        LeftMoterCtrl(0);
+        RightMoterCtrl(0);
+      }
+      else if (object_cnt = 0 && finder_var > 10) { //일정시간 이상 타겟이 없다면
+        Find();
+      }
+    }
+  
+
   while (mode == 0) { //자동모드
 
     object_cnt = pixy.getBlocks();
@@ -86,21 +83,15 @@ void loop() {
       Follow(target);
       finder_var = 0;
     }
-    if (distance < 20) { //장애물 감지 정지
+    if (distance < 30) { //장애물 감지 정지
       LeftMoterCtrl(0);
       RightMoterCtrl(0);
     }
-    if ((object_cnt == 0) && (finder_var > 20)) { //일정시간 이상 타겟이 없다면
+    if ((object_cnt == 0) && (finder_var > 20)) { //2초 시간 이상 타겟이 없다면
       Find();
     }
   }
-
->>>>>>> origin/master
   //  while (mode == 1) { //수동모드
   //
   //  }
-
-  pixy.setServos(500L, 160L);
-  GetDistance ();
-  delay(100);
 }

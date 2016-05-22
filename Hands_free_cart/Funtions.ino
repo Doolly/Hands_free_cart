@@ -72,11 +72,8 @@ void Follow(int target) {
   obj_size -= obj_size >> 3;
   Serial.print("obj_size = " + String(obj_size) + "\n");
 
-<<<<<<< HEAD
-  int a = map(distance_error, -90, 60, -450, 300);
-=======
-  int a = distance_error*5;
->>>>>>> origin/master
+  int a = map(distance_error, -900, 500, -450, 300);
+
   int base_speed = constrain(a, -150, 300);
 
   int speed_differential = (follow_error + (follow_error * base_speed)) >> 8; // follow_error가 500대 값
@@ -87,6 +84,7 @@ void Follow(int target) {
   LeftMoterCtrl(leftspeed);
   RightMoterCtrl(rightspeed);
 }
+
 int32_t toggle = 100L;
 void Find() {
   panLoop.m_pos += toggle;
@@ -110,19 +108,18 @@ void Find() {
 }
 
 void GetDistance (void) {
-  Raw_D = analogRead(DIS_SENSOR);
+  int Raw_D = analogRead(DIS_SENSOR);
   int filtered_distance = Raw_D;
   filtered_distance += Raw_D;
   filtered_distance -= filtered_distance >> 3;
-  distance = map (Raw_D, 500, 15, 200, 1500 );
+  distance = map (Raw_D, 500, 15, 200, 1500);
+  distance_error = distance - distance_throtle;
   Serial.print("filtered_distance = " + String(filtered_distance) + "\n");
   Serial.print("distance = " + String(distance) + "\n");
-
-//    if (Raw_D > 508 || Raw_D < 102) {
-//      distance = 0;
-//      Serial.print("Raw_D = " + String(Raw_D) + "\n");
-//      Serial.print("distance = " + String(distance) + "\n");
-//    }
+  Serial.print("distance_error = " + String(distance_error) + "\n");
+  //    if (Raw_D > 508 || Raw_D < 102) {
+  //      distance = 0;
+  //    }
 }
 
 void Change_Value_in_Serial() { //new line
